@@ -1,16 +1,14 @@
+FROM node:20
 
-# Railway Docker (optional) — Nixpacks also works if you skip this.
-FROM node:20-slim
+# Install git (needed for github deps)
+RUN apt-get update && apt-get install -y git
 
 WORKDIR /app
-COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+
+COPY package.json package-lock.json* npm-shrinkwrap.json* yarn.lock* ./
+
 RUN npm install
 
-COPY tsconfig.json ./
-COPY prisma ./prisma
-RUN npx prisma generate
+COPY . .
 
-COPY src ./src
-
-EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
